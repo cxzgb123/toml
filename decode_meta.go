@@ -1,6 +1,9 @@
 package toml
 
-import "strings"
+import (
+	"reflect"
+	"strings"
+)
 
 // MetaData allows access to meta information about TOML data that may not
 // be inferrable via reflection. In particular, whether a key has been defined
@@ -118,4 +121,16 @@ func (md *MetaData) Undecoded() []Key {
 		}
 	}
 	return undecoded
+}
+
+func (md *MetaData) Decode(v interface{}) error {
+	rv := reflect.ValueOf(v)
+	if rv.Kind() != reflect.Ptr {
+		return e("Decode of non-pointer %s", reflect.TypeOf(v))
+	}
+	if rv.IsNil() {
+		return e("Decode of nil %s", reflect.TypeOf(v))
+	}
+
+	return md.unify(md.mapping, indirect(rv))
 }
