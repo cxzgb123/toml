@@ -43,6 +43,10 @@ type Primitive struct {
 	context   Key
 }
 
+func (md *Primitive) Value() interface{} {
+	return md.undecoded
+}
+
 // DEPRECATED!
 //
 // Use MetaData.PrimitiveDecode instead.
